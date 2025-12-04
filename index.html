@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Quizlet-ish</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+    <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+    <main class="container">
+        <div class="slideshow">
+            <div><button id="prev">←</button></div>
+
+            <div class="card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        Welcome to your Flashcard App!
+                        <small>(click to flip card)</small>
+                    </div>
+                    <div class="card-back">
+                        Get started by adding a Flashcard...
+                    </div>
+                </div>
+            </div>
+
+            <div><button id="next">→</button></div>
+        </div>
+
+        <div class="btn-toolbar">
+            <button id="randomize">Random</button>
+            <button id="add">Add</button>
+            <button id="delete">Delete</button>
+        </div>
+    </main>
+
+    <dialog id="add-dialog" onclick="event.target === this && this.close()">
+        <article>
+            <header>
+                <h2>Add a Flashcard ✨</h2>
+                <button aria-label="Close" rel="prev" id="close"></button>
+            </header>
+
+            <label>Front of Card</label>
+            <input type="text" id="front-input" autofocus>
+
+            <label>Back of Card</label>
+            <input type="text" id="back-input">
+
+            <footer>
+                <button type="submit" id="submit">Submit</button>
+            </footer>
+        </article>
+    </dialog>
+
+    <script src="script.js"></script>
+</body>
+</html>
