@@ -1,61 +1,70 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Quizlet-ish</title>
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
-    <link rel="stylesheet" href="styles.css"/>
+  <meta charset="UTF-8">
+  <title>Big Body – Strength Level Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="script.js"></script>
 </head>
 <body>
-    <main class="container">
-        <div class="slideshow">
-            <div><button id="prev">←</button></div>
+  <header class="site-header">
+    <div class="header-inner">
+      <h1>Big Body</h1>
+      <p class="tagline">Check your strength level for different exercises.</p>
+    </div>
+  </header>
 
-            <div class="card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        Welcome to your Flashcard App!
-                        <small>(click to flip card)</small>
-                    </div>
-                    <div class="card-back">
-                        Get started by adding a Flashcard...
-                    </div>
-                </div>
-            </div>
+  <main class="page">
+    <section class="card input-card">
+      <h2>Enter Your Stats</h2>
 
-            <div><button id="next">→</button></div>
+      <form id="strength-form">
+        <div class="form-row">
+          <label>Gender</label>
+          <div class="radio-group">
+            <label><input type="radio" name="gender" value="male" checked> Male</label>
+            <label><input type="radio" name="gender" value="female"> Female</label>
+          </div>
         </div>
 
-        <div class="btn-toolbar">
-            <button id="randomize">Random</button>
-            <button id="add">Add</button>
-            <button id="delete">Delete</button>
+        <div class="form-row">
+          <label for="bodyweight">Bodyweight (lb)</label>
+          <input id="bodyweight" type="number" placeholder="e.g. 180" required>
         </div>
-    </main>
 
-    <dialog id="add-dialog" onclick="event.target === this && this.close()">
-        <article>
-            <header>
-                <h2>Add a Flashcard ✨</h2>
-                <button aria-label="Close" rel="prev" id="close"></button>
-            </header>
+        <div class="form-row">
+          <label for="exercise">Exercise</label>
+          <select id="exercise">
+            <option value="bench_press">Bench Press</option>
+            <option value="squat">Squat</option>
+            <option value="deadlift">Deadlift</option>
+            <option value="shoulder_press">Shoulder Press</option>
+          </select>
+        </div>
 
-            <label>Front of Card</label>
-            <input type="text" id="front-input" autofocus>
+        <div class="form-row">
+          <label for="max-lift">1RM (lb)</label>
+          <input id="max-lift" type="number" placeholder="e.g. 225" required>
+        </div>
 
-            <label>Back of Card</label>
-            <input type="text" id="back-input">
+        <button class="btn-primary" type="submit">Calculate Strength Level</button>
+      </form>
+    </section>
 
-            <footer>
-                <button type="submit" id="submit">Submit</button>
-            </footer>
-        </article>
-    </dialog>
+    <section class="card result-card" id="result-card">
+      <h2>Your Result</h2>
+      <p class="muted">Submit your stats to see your level.</p>
+    </section>
 
-    <script src="script.js"></script>
+    <section class="card standards-card">
+      <h2>Standards for Your Stats</h2>
+      <div id="standards-table-wrapper" class="muted">Fill form first.</div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Big Body © Inspired by strengthlevel.com </p>
+  </footer>
 </body>
 </html>

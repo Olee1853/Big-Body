@@ -1,114 +1,88 @@
-const cardEl = document.querySelector(".card");
-const frontTextEl = document.querySelector(".card-front");
-const backTextEl = document.querySelector(".card-back");
+// =====================================
+// Big Body - Simple Strength Calculator
+// =====================================
 
-const nextBtn = document.querySelector("#next");
-const prevBtn = document.querySelector("#prev");
-const deleteBtn = document.querySelector("#delete");
-const addBtn = document.querySelector("#add");
-const randomBtn = document.querySelector("#randomize");
+// This will store the ratios after we fetch them
+let strengthAPI = null;
 
-const addDialog = document.querySelector("#add-dialog");
-const frontInput = document.querySelector("#front-input");
-const backInput = document.querySelector("#back-input");
-const submitBtn = document.querySelector("#submit");
-const closeBtn = document.querySelector("#close");
+// Load the API (strength.json) when the page opens
+fetch("api/strength.json")
+  .then(res => res.json())
+  .then(data => {
+    strengthAPI = data; // save the data
+    console.log("API Loaded:", data);
+  })
+  .catch(err => alert("Could not load API."));
 
-async function fetchJson(path, options = {}) {
-    // TODO: handle errors
-    const response = await fetch(path, options);
-    const data = await response.json();
-    return data;
-}
+// ===============================
+// When user presses Calculate
+// ===============================
+document.getElementById("strength-form")
+  .addEventListener("submit", function (event) {
+    event.preventDefault(); // stop page reload
 
-async function postJson(path, body) {
-    return fetchJson(path, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-    });
-}
-
-function randomInteger(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-const getCards = () => fetchJson("/cards");
-const getCardById = (id) => fetchJson(`/card/${id}`);
-const addCard = (front, back) => postJson("/new", { front, back });
-const deleteCardById = (id) => fetchJson(`/delete/${id}`);
-
-let allCards = [];
-let cardIndex = -1;
-
-async function updateCards() {
-    allCards = await getCards();
-
-    for (const btn of [nextBtn, prevBtn, deleteBtn, randomBtn]) {
-        btn.disabled = allCards.length === 0;
+    // API still loading?
+    if (!strengthAPI) {
+      alert("Please wait... Loading strength data!");
+      return;
     }
 
-    showCard(cardIndex);
-}
+    // Get user input
+    let gender = document.querySelector("input[name='gender']:checked").value;
+    let bodyweight = Number(document.getElementById("bodyweight").value);
+    let exercise = document.getElementById("exercise").value;
+    let maxLift = Number(document.getElementById("max-lift").value);
 
-function showCard(newIndex) {
-    if (newIndex >= allCards.length) newIndex = 0;
-    if (newIndex <= -1) newIndex = allCards.length - 1;
-
-    cardIndex = newIndex;
-
-    let backText;
-
-    if (allCards.length === 0 || cardIndex === -1) {
-        frontTextEl.innerHTML = "Welcome to your Flashcard App!\n<small>(click to flip card)</small>";
-        backText = "Get started by adding a Flashcard...";
-    } else {
-        frontTextEl.textContent = allCards[cardIndex].front;
-        backText = allCards[cardIndex].back;
+    // Basic safety check
+    if (bodyweight <= 0 || maxLift <= 0) {
+      alert("Please enter a valid bodyweight and 1RM.");
+      return;
     }
 
-    if (cardEl.classList.contains("reveal")) {
-        cardEl.classList.remove("reveal");
+    // Get ratios from API for this gender + lift
+    let ratios = strengthAPI[gender][exercise];
+    let userRatio = maxLift / bodyweight;
 
-        // wait for the card animation to finish before showing the back
-        // (somewhat error-prone way to do this, but it works for our purposes)
-        setTimeout(() => (backTextEl.textContent = backText), 800);
-    } else {
-        backTextEl.textContent = backText;
-    }
+    // Level names
+    let levels = ["Beginner", "Novice", "Intermediate", "Advanced", "Elite"];
+
+    // Find what level user is
+    let levelIndex = ratios.findIndex(r => userRatio < r);
+    if (levelIndex === -1) levelIndex = 4; // max = elite
+
+    let userLevel = levels[levelIndex];
+
+    // ------------------------------
+    // Show result in result box
+    // ------------------------------
+    document.getElementById("result-card").innerHTML = `
+      <h2>Your Result</h2>
+      <p>You are <strong>${userLevel}</strong> at the <b>${exercise.replace("_", " ").toUpperCase()}</b>.</p>
+      <p>Your lift: <strong>${maxLift} lb</strong></p>
+      <p>Bodyweight: <strong>${bodyweight} lb</strong></p>
+      <p>Strength Ratio: <strong>${userRatio.toFixed(2)}×</strong></p>
+    `;
+
+    // Build the standards table
+    buildTable(ratios, bodyweight, levelIndex);
+  });
+
+// ===============================
+// Build Standards Table
+// ===============================
+function buildTable(ratios, bodyweight, highlightIndex) {
+  let levels = ["Beginner", "Novice", "Intermediate", "Advanced", "Elite"];
+
+  let rows = ratios.map((ratio, i) => {
+    let est = Math.round((ratio * bodyweight) / 5) * 5;
+    let style = i === highlightIndex ? "style='color:#4ade80; font-weight:bold;'" : "";
+    return `<tr ${style}><td>${levels[i]}</td><td>${ratio.toFixed(2)}× BW</td><td>${est} lb</td></tr>`;
+  }).join("");
+
+  document.getElementById("standards-table-wrapper").innerHTML = `
+    <table class="standards-table">
+      <thead><tr><th>Level</th><th>Ratio</th><th>Approx. 1RM</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
 }
-
-nextBtn.addEventListener("click", () => showCard(cardIndex + 1));
-prevBtn.addEventListener("click", () => showCard(cardIndex - 1));
-cardEl.addEventListener("click", () => cardEl.classList.toggle("reveal"));
-
-addBtn.addEventListener("click", () => addDialog.showModal());
-closeBtn.addEventListener("click", () => addDialog.close());
-
-submitBtn.addEventListener("click", async () => {
-    const frontText = frontInput.value.trim();
-    const backText = backInput.value.trim();
-
-    if (frontText === "" || backText === "") return;
-
-    await addCard(frontText, backText);
-    await updateCards();
-
-    frontInput.value = "";
-    backInput.value = "";
-
-    addDialog.close();
-});
-
-deleteBtn.addEventListener("click", async () => {
-    await deleteCardById(allCards[cardIndex]._id);
-    await updateCards();
-});
-
-randomBtn.addEventListener("click", () => {
-    showCard(randomInteger(0, allCards.length - 1));
-});
-
-updateCards();

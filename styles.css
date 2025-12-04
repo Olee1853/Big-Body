@@ -1,104 +1,242 @@
-html,
+/* RESET */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
-    height: 100%;
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background: radial-gradient(circle at top, #111827 0, #020617 55%, #000 100%);
+  color: #e5e7eb;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-main {
-    min-height: 100%;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
+/* HEADER */
+
+.site-header {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+  padding: 1.25rem 1.5rem;
+  backdrop-filter: blur(18px);
+  background: linear-gradient(
+    to right,
+    rgba(15, 23, 42, 0.9),
+    rgba(30, 64, 175, 0.75)
+  );
 }
 
-/* https://codepen.io/atmos4/pen/YzggydY */
-dialog:not([open]) {
-    display: grid;
-    opacity: 0;
-    pointer-events: none;
-    visibility: hidden;
-    transition: all var(--pico-transition) allow-discrete;
+.header-inner {
+  max-width: 960px;
+  margin: 0 auto;
 }
 
-dialog[open] {
-    /* display: grid; */
-    visibility: visible;
-    opacity: 1;
-    transition: opacity var(--pico-transition);
+.site-header h1 {
+  margin: 0;
+  font-size: 1.9rem;
+  letter-spacing: 0.04em;
 }
 
-dialog article {
-    max-height: unset;
-    overflow: unset;
-    transform: scale(0.5);
-    transition: transform var(--pico-transition);
+.tagline {
+  margin: 0.25rem 0 0;
+  font-size: 0.95rem;
+  color: #cbd5f5;
 }
 
-dialog[open] article {
-    transform: scale(1);
+/* FOOTER */
+
+.site-footer {
+  margin-top: auto;
+  padding: 1rem 1.5rem 1.5rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.3);
+  font-size: 0.8rem;
+  text-align: center;
+  color: #9ca3af;
 }
 
-dialog header {
-    padding: 1.5rem 1.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+/* LAYOUT */
+
+.page {
+  max-width: 960px;
+  margin: 1.75rem auto 2.5rem;
+  padding: 0 1.5rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 1.5rem;
 }
 
-.slideshow {
-    display: flex;
-    gap: 2rem;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 2rem;
-}
-
-/* https://www.w3schools.com/howto/howto_css_flip_card.asp */
 .card {
-    background-color: transparent;
-    width: 500px;
-    height: 400px;
-    max-width: 100%;
-    max-height: 100%;
-    perspective: 1000px;
-    cursor: pointer;
+  background: linear-gradient(135deg, #020617, #020617 55%, #02091c);
+  border-radius: 18px;
+  padding: 1.5rem 1.7rem;
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(148, 163, 184, 0.25);
 }
 
-.card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    transition: transform 0.8s;
-    transform-style: preserve-3d;
+.card h2 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: 1.2rem;
+  letter-spacing: 0.04em;
 }
 
-.card.reveal .card-inner {
-    transform: rotateY(-180deg);
+.input-card {
+  grid-row: span 2;
 }
 
-.card-front,
-.card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    -webkit-backface-visibility: hidden; /* Safari */
-    backface-visibility: hidden;
-    box-shadow: 4px 4px 16px 0 rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    font-size: 1.4rem;
+.result-card {
+  min-height: 180px;
 }
 
-.card-back {
-    transform: rotateY(180deg);
+.standards-card {
+  grid-column: span 2;
 }
 
-.btn-toolbar {
-    display: flex;
-    gap: 0.5rem;
+/* FORM */
+
+.form-row {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+label {
+  font-size: 0.9rem;
+  color: #e5e7eb;
+}
+
+input[type="number"],
+select {
+  background: #020617;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  padding: 0.55rem 0.7rem;
+  color: #e5e7eb;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border 0.15s ease, box-shadow 0.15s ease, transform 0.06s ease;
+}
+
+input[type="number"]:focus,
+select:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.6);
+  transform: translateY(-1px);
+}
+
+.radio-group {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+
+.radio-group input {
+  margin-right: 0.35rem;
+}
+
+/* BUTTON */
+
+.btn-primary {
+  margin-top: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.4rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: #e5e7eb;
+  box-shadow: 0 14px 30px rgba(79, 70, 229, 0.4);
+  transition: transform 0.08s ease, box-shadow 0.12s ease, filter 0.12s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 38px rgba(79, 70, 229, 0.55);
+  filter: brightness(1.05);
+}
+
+.btn-primary:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 8px 18px rgba(79, 70, 229, 0.4);
+}
+
+/* RESULT */
+
+.muted {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.highlight {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+/* TABLE */
+
+.standards-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.standards-table thead {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+.standards-table th,
+.standards-table td {
+  padding: 0.55rem 0.6rem;
+  text-align: left;
+}
+
+.standards-table th {
+  font-weight: 600;
+  color: #e5e7eb;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+.standards-table tbody tr:nth-child(odd) {
+  background: rgba(15, 23, 42, 0.7);
+}
+
+.standards-table tbody tr:nth-child(even) {
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.standards-table tbody tr.highlight-row {
+  outline: 1px solid rgba(52, 211, 153, 0.8);
+}
+
+/* ERROR */
+.error-msg {
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  color: #fca5a5;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 800px) {
+  .page {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .input-card {
+    grid-row: auto;
+  }
+
+  .standards-card {
+    grid-column: auto;
+  }
 }
