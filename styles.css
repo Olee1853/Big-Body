@@ -215,26 +215,3 @@ select:focus {
 .standards-table tbody tr.highlight-row {
   outline: 1px solid rgba(52, 211, 153, 0.8);
 }
-
-
-.error-msg {
-  margin-top: 0.35rem;
-  font-size: 0.8rem;
-  color: #fca5a5;
-}
-
-
-
-@media (max-width: 800px) {
-  .page {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .input-card {
-    grid-row: auto;
-  }
-
-  .standards-card {
-    grid-column: auto;
-  }
-}
