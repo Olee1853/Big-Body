@@ -1,62 +1,49 @@
-// This will store the ratios after we fetch them
 let strengthAPI = null;
 
-// Load the API (strength.json) when the page opens
 fetch("api/strength.json")
   .then(res => res.json())
   .then(data => {
-    strengthAPI = data; // save the data
+    strengthAPI = data; 
     console.log("API Loaded:", data);
   })
   .catch(err => alert("Could not load API."));
 
-// ===============================
-// When user presses Calculate
-// ===============================
-document.getElementById("strength-form")
+
+
+  document.getElementById("strength-form")
   .addEventListener("submit", function (event) {
-    event.preventDefault(); // stop page reload
+    event.preventDefault();
 
-    // API still loading?
-    if (!strengthAPI) {
-      alert("Please wait... Loading strength data!");
-      return;
-    }
 
-    // Get user input
     let gender = document.querySelector("input[name='gender']:checked").value;
     let bodyweight = Number(document.getElementById("bodyweight").value);
     let exercise = document.getElementById("exercise").value;
     let maxLift = Number(document.getElementById("max-lift").value);
 
-    // Basic safety check
+
     if (bodyweight <= 0 || maxLift <= 0) {
         alert("Please enter a valid bodyweight and 1 Rep Max greater than zero.");
         return;
     }
 
-    // Get ratios from API for this gender + lift
+
     let ratios = strengthAPI[gender][exercise];
     let userRatio = maxLift / bodyweight;
 
-    // Level names
+
     let levels = ["Beginner", "Novice", "Intermediate", "Advanced", "Elite"];
 
-    // Find what level user is
-    let levelIndex = 0; // start as Beginner
+    let levelIndex = 0;
 
     for (let i = 0; i < ratios.length; i++) {
         if (userRatio >= ratios[i]) {
-        levelIndex = i; // update to the highest level they qualify for
+        levelIndex = i;
         }
     }
 
-  // Now pick the correct level name
-  let userLevel = levels[levelIndex];
+    let userLevel = levels[levelIndex];
 
-    // ------------------------------
-    // Show result in result box
-    // ------------------------------
+
     document.getElementById("result-card").innerHTML = `
       <h2>Your Result</h2>
       <p>You are <strong>${userLevel}</strong> at the <b>${exercise.replace("_", " ").toUpperCase()}</b>.</p>
@@ -65,14 +52,12 @@ document.getElementById("strength-form")
       <p>Strength Ratio: <strong>${userRatio.toFixed(2)}×</strong></p>
     `;
 
-    // Build the standards table
+
     buildTable(ratios, bodyweight, levelIndex);
   });
 
-// ===============================
-// Build Standards Table
-// ===============================
-function buildTable(ratios, bodyweight, highlightIndex) {
+
+  function buildTable(ratios, bodyweight, highlightIndex) {
   let levels = ["Beginner", "Novice", "Intermediate", "Advanced", "Elite"];
 
   let rows = ratios.map((ratio, i) => {
