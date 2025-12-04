@@ -1,7 +1,3 @@
-// =====================================
-// Big Body - Simple Strength Calculator
-// =====================================
-
 // This will store the ratios after we fetch them
 let strengthAPI = null;
 
@@ -35,8 +31,8 @@ document.getElementById("strength-form")
 
     // Basic safety check
     if (bodyweight <= 0 || maxLift <= 0) {
-      alert("Please enter a valid bodyweight and 1RM.");
-      return;
+        alert("Please enter a valid bodyweight and 1 Rep Max greater than zero.");
+        return;
     }
 
     // Get ratios from API for this gender + lift
@@ -47,10 +43,16 @@ document.getElementById("strength-form")
     let levels = ["Beginner", "Novice", "Intermediate", "Advanced", "Elite"];
 
     // Find what level user is
-    let levelIndex = ratios.findIndex(r => userRatio < r);
-    if (levelIndex === -1) levelIndex = 4; // max = elite
+    let levelIndex = 0; // start as Beginner
 
-    let userLevel = levels[levelIndex];
+    for (let i = 0; i < ratios.length; i++) {
+        if (userRatio >= ratios[i]) {
+        levelIndex = i; // update to the highest level they qualify for
+        }
+    }
+
+  // Now pick the correct level name
+  let userLevel = levels[levelIndex];
 
     // ------------------------------
     // Show result in result box
